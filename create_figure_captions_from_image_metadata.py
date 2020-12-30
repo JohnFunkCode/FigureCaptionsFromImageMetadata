@@ -15,7 +15,7 @@ class CreateFigureCaptionsFromImageMetaData:
         self._image_files = list()
 
     def read_filenames_from_directory(self, base_direcory='.', recursive=False,
-                                      extensions=['*.png', '*.psd', '*.jpg', '*.tiff']):
+                                      extensions=['*.png', '*.psd', '*.jpg']):
         """
 
         :param base_direcory:
@@ -33,7 +33,7 @@ class CreateFigureCaptionsFromImageMetaData:
                     self._image_files.extend([i])
             else:
                 for file in path.glob(ext):
-                    self._image_files.extend(ImageFile(file))
+                    self._image_files.extend([ImageFile(file)])
         print(len(self._image_files))
 
     def print_image_files(self):
@@ -50,11 +50,18 @@ class CreateFigureCaptionsFromImageMetaData:
         :param directory:
         :return:
         """
-        self.read_filenames_from_directory(directory, recursive=True)
+        self.read_filenames_from_directory(directory, recursive=False)
         self.print_image_files()
 
 
 if __name__ == '__main__':
     c = CreateFigureCaptionsFromImageMetaData()
-    c.do_all('/mnt/h/LightRoomCatalogExperiments/DadPhotos/Pictures/DadsPhotos/')
+    c.do_all('/mnt/h/LightRoomCatalogExperiments/DadPhotos/Pictures/DadsPhotos')
     # fire.Fire(CreateFigureCaptionsFromImageMetaData)
+
+    from html_generator import htmlGenerator
+    with htmlGenerator() as h:
+        h.generate_heading()
+        for file in c._image_files:
+            h.generate_figure_caption( file )
+        h.generate_footer()
